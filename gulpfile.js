@@ -6,8 +6,10 @@ const plumber = require("gulp-plumber")
 const autoprefixer = require("gulp-autoprefixer")
 const browserSync = require("browser-sync")
 
-gulp.task("pug", () => {
-    return gulp.src("src/*.pug")
+const { watch, series, task, src, dest, parallel } = require("gulp");
+
+task("pug", () => {
+    return src("src/*.pug")
         .pipe(plumber({
             errorHandler: function(err) {
                 console.log(err.messageFormatted);
@@ -17,11 +19,11 @@ gulp.task("pug", () => {
         .pipe(pug({
             pretty: true
         }))
-        .pipe(gulp.dest("dist"))
+        .pipe(dest("dist"))
 });
 
-gulp.task("sass", () => {
-    return gulp.src("src/*.sass")
+task("sass", () => {
+    return src("src/*.sass")
         .pipe(plumber({
             errorHandler: function(err) {
                 console.log(err.messageFormatted);
@@ -30,11 +32,11 @@ gulp.task("sass", () => {
         }))
         .pipe(sass())
         .pipe(autoprefixer())
-        .pipe(gulp.dest("dist"))
+        .pipe(dest("dist"))
 })
 
-gulp.task("babel", () => {
-    return gulp.src("src/*.es6")
+task("babel", () => {
+    return src("src/*.es6")
         .pipe(plumber({
             errorHandler: function(err) {
                 console.log(err.messageFormatted);
@@ -44,37 +46,37 @@ gulp.task("babel", () => {
         .pipe(babel({
             presets: ["@babel/preset-env"]
         }))
-        .pipe(gulp.dest("dist"))
+        .pipe(dest("dist"))
 })
 
-gulp.task("update", () => {
-    gulp.series("babel")
-    gulp.series("sass")
-    gulp.series("pug")
+task("update", () => {
+    series("babel")
+    series("sass")
+    series("pug")
 })
 
-gulp.task("browser-sync", () => {
+task("browser-sync", () => {
     browserSync({
         server: {
             baseDir: "./dist/"
         }
     })
 
-    gulp.series("update")
+    series("update")
 
-    gulp.watch("dist/*.js", gulp.series("reload"))
-    gulp.watch("dist/*.css", gulp.series("reload"))
-    gulp.watch("dist/*.html", gulp.series("reload"))
+    watch("dist/*.js", series("reload"))
+    watch("dist/*.css", series("reload"))
+    watch("dist/*.html", series("reload"))
 })
 
-gulp.task("reload", () => {
+task("reload", () => {
     browserSync.reload();
 });
 
-gulp.task("watch", () => {
-    gulp.watch("src/*.es6", gulp.series("babel"));
-    gulp.watch("src/*.sass", gulp.series("sass"));
-    gulp.watch("src/*.pug", gulp.series("pug"));
+task("watch", () => {
+    watch("src/*.es6", series("babel"));
+    watch("src/*.sass", series("sass"));
+    watch("src/*.pug", series("pug"));
 });
 
-gulp.task("default", gulp.parallel("browser-sync", "watch"));
+task("default", parallel("browser-sync", "watch"));
