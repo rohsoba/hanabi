@@ -5,8 +5,10 @@
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.15.0",
-    "@babel/preset-env": "^7.15.0",
+    "@babel/preset-env": "^7.15.4",
+    "babelify": "^10.0.0",
     "browser-sync": "^2.27.5",
+    "browserify": "^17.0.0",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^8.0.0",
     "gulp-babel": "^8.0.0",
@@ -14,6 +16,7 @@
     "gulp-plumber": "^1.2.1",
     "gulp-pug": "^5.0.0",
     "gulp-sass": "^5.0.0",
-    "sass": "^1.39.0"
+    "sass": "^1.39.0",
+    "vinyl-source-stream": "^2.0.0"
   }
 }

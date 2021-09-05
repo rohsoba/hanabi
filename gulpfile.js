@@ -5,13 +5,16 @@ const babel = require("gulp-babel")
 const plumber = require("gulp-plumber")
 const autoprefixer = require("gulp-autoprefixer")
 const browserSync = require("browser-sync")
+const browserify = require("browserify")
+const babelify = require("babelify")
+const source = require("vinyl-source-stream")
 
-const { watch, series, task, src, dest, parallel } = require("gulp");
+const {watch, series, task, src, dest, parallel} = require("gulp");
 
 task("pug", () => {
     return src("src/*.pug")
         .pipe(plumber({
-            errorHandler: function(err) {
+            errorHandler: function (err) {
                 console.log(err.messageFormatted);
                 this.emit('end');
             }
@@ -25,7 +28,7 @@ task("pug", () => {
 task("sass", () => {
     return src("src/*.sass")
         .pipe(plumber({
-            errorHandler: function(err) {
+            errorHandler: function (err) {
                 console.log(err.messageFormatted);
                 this.emit('end');
             }
@@ -36,9 +39,9 @@ task("sass", () => {
 })
 
 task("babel", () => {
-    return src("src/*.es6")
+    return src("src/*.js")
         .pipe(plumber({
-            errorHandler: function(err) {
+            errorHandler: function (err) {
                 console.log(err.messageFormatted);
                 this.emit('end');
             }
@@ -49,8 +52,17 @@ task("babel", () => {
         .pipe(dest("dist"))
 })
 
+task("browserify", () => {
+    browserify("src/main.js", { debug: true })
+        .transform(babelify, {presets: ['@babel/preset-env']})
+        .bundle()
+        .on("error", function (err) { console.log("Error : " + err.message); })
+        .pipe(source("bundle.js"))
+        .pipe(dest("dist"))
+})
+
 task("update", () => {
-    series("babel")
+    series("browserify")
     series("sass")
     series("pug")
 })
@@ -71,10 +83,10 @@ task("browser-sync", () => {
 
 task("reload", () => {
     browserSync.reload();
-});
+})
 
 task("watch", () => {
-    watch("src/*.es6", series("babel"));
+    watch("src/*.js", series("browserify"));
     watch("src/*.sass", series("sass"));
     watch("src/*.pug", series("pug"));
 });

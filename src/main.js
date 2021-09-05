@@ -1,50 +1,5 @@
-
-class Vector2d {
-    constructor(x, y) {
-        this.x = x
-        this.y = y
-    }
-
-    add(v) {
-        this.x += v.x
-        this.y += v.y
-    }
-
-    times(m) {
-        this.x *= m
-        this.y *= m
-    }
-}
-
-class Sparkle {
-    constructor(x, y, z, size, life, v) {
-        this.x = x
-        this.y = y
-        this.z = z
-        this._size = size
-        this.time = 0
-        this.life = life
-        this.v = v
-    }
-
-    next() {
-        this.x += this.v.x
-        this.y += this.v.y
-
-        this.v.times(AR)
-        this.v.add(G)
-
-        this.time++
-    }
-
-    isEnd() {
-        return this.time >= this.life
-    }
-
-    size() {
-        return this._size * ((this.life - this.time) / this.life)
-    }
-}
+import {Vector2d} from "./vector2d"
+import {Sparkle} from "./sparkle";
 
 let size = 500
 let dotSize = 1 / size
@@ -56,15 +11,15 @@ const AR = 0.95
 function draw() {
     context.save()
 
-    context.translate(size/2, size/2)
-    context.scale(size/2, -size/2)
+    context.translate(size / 2, size / 2)
+    context.scale(size / 2, -size / 2)
     context.fillStyle = "black"
     context.fillRect(-1, -1, 2, 2)
 
     sparkles.forEach(s => {
         context.fillStyle = "white"
         context.beginPath()
-        context.arc(s.x, s.y, s.size(), 0, Math.PI*2, false)
+        context.arc(s.x, s.y, s.size(), 0, Math.PI * 2, false)
         context.closePath()
         context.fill()
     })
@@ -83,7 +38,7 @@ function next() {
     sparkles = sparkles.filter(s => !s.isEnd())
 }
 
-window.addEventListener('DOMContentLoaded', event => {
+window.addEventListener('DOMContentLoaded', () => {
     let canvas = document.createElement("canvas")
     canvas.width = size
     canvas.height = size
@@ -96,7 +51,7 @@ window.addEventListener('DOMContentLoaded', event => {
         let vx = Math.cos(angle) * size
         let vy = Math.sin(angle) * size
         let life = 80 + Math.random() * 20 - 10
-        sparkles.push(new Sparkle(0, 0, 0, dotSize*3, life, new Vector2d(vx, vy)))
+        sparkles.push(new Sparkle(0, 0, 0, dotSize * 3, life, new Vector2d(vx, vy), AR, G))
     }
 
     document.body.appendChild(canvas)
