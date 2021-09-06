@@ -1,4 +1,4 @@
-const gulp = require("gulp")
+const {watch, series, task, src, dest, parallel} = require("gulp")
 const pug = require("gulp-pug")
 const sass = require('gulp-sass')(require('sass'))
 const babel = require("gulp-babel")
@@ -8,8 +8,6 @@ const browserSync = require("browser-sync")
 const browserify = require("browserify")
 const babelify = require("babelify")
 const source = require("vinyl-source-stream")
-
-const {watch, series, task, src, dest, parallel} = require("gulp");
 
 task("pug", () => {
     return src("src/*.pug")
@@ -23,7 +21,7 @@ task("pug", () => {
             pretty: true
         }))
         .pipe(dest("dist"))
-});
+})
 
 task("sass", () => {
     return src("src/*.sass")
