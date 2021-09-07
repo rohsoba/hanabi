@@ -17,7 +17,7 @@ function draw() {
     context.fillRect(-1, -1, 2, 2)
 
     sparkles.forEach(s => {
-        context.fillStyle = "yellow"
+        context.fillStyle = "white"
         context.beginPath()
         context.arc(s.x, s.y, s.size(), 0, Math.PI * 2, false)
         context.closePath()
