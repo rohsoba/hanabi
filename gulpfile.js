@@ -1,7 +1,6 @@
 const {watch, series, task, src, dest, parallel} = require("gulp")
 const pug = require("gulp-pug")
 const sass = require('gulp-sass')(require('sass'))
-const babel = require("gulp-babel")
 const plumber = require("gulp-plumber")
 const autoprefixer = require("gulp-autoprefixer")
 const browserSync = require("browser-sync")
@@ -37,30 +36,21 @@ task("sass", () => {
 })
 
 task("babel", () => {
-    return src("src/*.js")
+    return browserify("src/main.js", { debug: true })
+        .transform(babelify, {presets: ['@babel/preset-env']})
+        .bundle()
         .pipe(plumber({
             errorHandler: function (err) {
                 console.log(err.messageFormatted);
                 this.emit('end');
             }
         }))
-        .pipe(babel({
-            presets: ["@babel/preset-env"]
-        }))
-        .pipe(dest("dist"))
-})
-
-task("browserify", () => {
-    browserify("src/main.js", { debug: true })
-        .transform(babelify, {presets: ['@babel/preset-env']})
-        .bundle()
-        .on("error", function (err) { console.log("Error : " + err.message); })
         .pipe(source("bundle.js"))
         .pipe(dest("dist"))
 })
 
 task("update", () => {
-    series("browserify")
+    series("babel")
     series("sass")
     series("pug")
 })
@@ -84,9 +74,9 @@ task("reload", () => {
 })
 
 task("watch", () => {
-    watch("src/*.js", series("browserify"));
+    watch("src/*.js", series("babel"));
     watch("src/*.sass", series("sass"));
     watch("src/*.pug", series("pug"));
 });
 
-task("default", parallel("browser-sync", "watch"));
+task("default", parallel("watch", "browser-sync"));
