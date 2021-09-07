@@ -9,8 +9,8 @@ const babelify = require("babelify")
 const source = require("vinyl-source-stream")
 
 function error(err) {
-    console.error(err.messageFormatted);
-    this.emit('end');
+    console.error(err.messageFormatted)
+    this.emit('end')
 }
 
 task("pug", () => {
@@ -37,20 +37,12 @@ task("babel", () => {
         .pipe(dest("dist"))
 })
 
-task("update", () => {
-    series("babel")
-    series("sass")
-    series("pug")
-})
-
 task("browser-sync", () => {
     browserSync({
         server: {
             baseDir: "./dist/"
         }
     })
-
-    series("update")
 
     watch("dist/*.js", series("reload"))
     watch("dist/*.css", series("reload"))
@@ -62,9 +54,9 @@ task("reload", () => {
 })
 
 task("watch", () => {
-    watch("src/*.js", series("babel"));
-    watch("src/*.sass", series("sass"));
-    watch("src/*.pug", series("pug"));
+    watch("src/*.js", series("babel"))
+    watch("src/*.sass", series("sass"))
+    watch("src/*.pug", series("pug"))
 });
 
-task("default", parallel("watch", "browser-sync"));
+task("default", series("babel", "sass", "pug", parallel("watch", "browser-sync")))
