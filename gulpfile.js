@@ -8,28 +8,21 @@ const browserify = require("browserify")
 const babelify = require("babelify")
 const source = require("vinyl-source-stream")
 
+function error(err) {
+    console.error(err.messageFormatted);
+    this.emit('end');
+}
+
 task("pug", () => {
     return src("src/*.pug")
-        .pipe(plumber({
-            errorHandler: function (err) {
-                console.log(err.messageFormatted);
-                this.emit('end');
-            }
-        }))
-        .pipe(pug({
-            pretty: true
-        }))
+        .pipe(plumber({ errorHandler: error }))
+        .pipe(pug())
         .pipe(dest("dist"))
 })
 
 task("sass", () => {
     return src("src/*.sass")
-        .pipe(plumber({
-            errorHandler: function (err) {
-                console.log(err.messageFormatted);
-                this.emit('end');
-            }
-        }))
+        .pipe(plumber({ errorHandler: error }))
         .pipe(sass())
         .pipe(autoprefixer())
         .pipe(dest("dist"))
@@ -39,12 +32,7 @@ task("babel", () => {
     return browserify("src/main.js", { debug: true })
         .transform(babelify, {presets: ['@babel/preset-env']})
         .bundle()
-        .pipe(plumber({
-            errorHandler: function (err) {
-                console.log(err.messageFormatted);
-                this.emit('end');
-            }
-        }))
+        .pipe(plumber({ errorHandler: error }))
         .pipe(source("bundle.js"))
         .pipe(dest("dist"))
 })
