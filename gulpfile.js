@@ -45,10 +45,21 @@ task("server", () => {
     })
 })
 
+task("reload", (done) => {
+    browserSync.reload()
+    done()
+})
+
 task("src", () => {
     watch("src/*.js", series("babel"))
     watch("src/*.sass", series("sass"))
     watch("src/*.pug", series("pug"))
 })
 
-task("default", series("babel", "sass", "pug", parallel("src", "server")))
+task("dist", () => {
+    watch("dist/*.js", series("reload"))
+    watch("dist/*.css", series("reload"))
+    watch("dist/*.html", series("reload"))
+})
+
+task("default", series("babel", "sass", "pug", parallel("src", "dist", "server")))
