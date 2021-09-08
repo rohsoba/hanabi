@@ -1,12 +1,12 @@
 import {Vector2d} from "./vector2d"
-import {Sparkle} from "./sparkle";
+import {Firework} from "./firework"
 
 let size = 500
 let width = size
 let height = size * 1.5
 let dotSize = 1 / size
 let context
-let sparkles
+let sparkles = []
 const G = new Vector2d(0, -0.0001)
 const AR = 0.95
 
@@ -21,7 +21,7 @@ function draw() {
     sparkles.forEach(s => {
         context.fillStyle = "white"
         context.beginPath()
-        context.arc(s.x, s.y, s.size(), 0, Math.PI * 2, false)
+        context.arc(s.x, s.y, s.size() * dotSize, 0, Math.PI * 2, false)
         context.closePath()
         context.fill()
     })
@@ -46,15 +46,12 @@ window.addEventListener('DOMContentLoaded', () => {
     canvas.height = height
     context = canvas.getContext("2d")
 
-    sparkles = []
-    for (let i = 0; i < 500; i++) {
-        let size = Math.random() * 0.04
-        let angle = Math.random() * 3 * Math.PI
-        let vx = Math.cos(angle) * size
-        let vy = Math.sin(angle) * size
-        let life = 80 + Math.random() * 20 - 10
-        sparkles.push(new Sparkle(0, 0, 0, dotSize * 3, life, new Vector2d(vx, vy), AR, G))
-    }
+    let speed = 0.1
+    let angle = Math.PI / 2
+    let vx = Math.cos(angle) * speed
+    let vy = Math.sin(angle) * speed
+    let life = 80
+    new Firework(0, 0, 0, 10, life, new Vector2d(vx, vy), sparkles)
 
     document.body.appendChild(canvas)
     draw()
