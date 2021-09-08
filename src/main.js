@@ -1,4 +1,3 @@
-import {Vector2d} from "./vector2d"
 import {Firework} from "./firework"
 
 let size = 500
@@ -6,9 +5,8 @@ let width = size
 let height = size * 1.5
 let dotSize = 1 / size
 let context
-let sparkles = []
-const G = new Vector2d(0, -0.0001)
-const AR = 0.95
+export let sparkles = []
+let nextShot = 0
 
 function draw() {
     context.save()
@@ -38,6 +36,11 @@ function next() {
         s.next()
     })
     sparkles = sparkles.filter(s => !s.isEnd())
+
+    if (--nextShot <= 0) {
+        nextShot = 40 + Math.random() * 20
+        sparkles.push(new Firework())
+    }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -45,13 +48,6 @@ window.addEventListener('DOMContentLoaded', () => {
     canvas.width = width
     canvas.height = height
     context = canvas.getContext("2d")
-
-    let speed = 0.1
-    let angle = Math.PI / 2
-    let vx = Math.cos(angle) * speed
-    let vy = Math.sin(angle) * speed
-    let life = 80
-    new Firework(0, 0, 0, 10, life, new Vector2d(vx, vy), sparkles)
 
     document.body.appendChild(canvas)
     draw()

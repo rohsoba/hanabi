@@ -1,5 +1,5 @@
 export class Sparkle {
-    constructor(x, y, z, size, life, v, ar, g, sparkles) {
+    constructor(x, y, z, size, life, v, ar, g) {
         this.x = x
         this.y = y
         this.z = z
@@ -9,8 +9,6 @@ export class Sparkle {
         this.v = v
         this.ar = ar
         this.g = g
-        this.sparkles = sparkles
-        sparkles.push(this)
     }
 
     next() {
