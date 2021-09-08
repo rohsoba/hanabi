@@ -2,6 +2,8 @@ import {Vector2d} from "./vector2d"
 import {Sparkle} from "./sparkle";
 
 let size = 500
+let width = size
+let height = size * 1.5
 let dotSize = 1 / size
 let context
 let sparkles
@@ -11,10 +13,10 @@ const AR = 0.95
 function draw() {
     context.save()
 
-    context.translate(size / 2, size / 2)
     context.scale(size / 2, -size / 2)
+    context.translate(1, -2.9)
     context.fillStyle = "black"
-    context.fillRect(-1, -1, 2, 2)
+    context.fillRect(-1, -0.1, 2, 3)
 
     sparkles.forEach(s => {
         context.fillStyle = "white"
@@ -40,8 +42,8 @@ function next() {
 
 window.addEventListener('DOMContentLoaded', () => {
     let canvas = document.createElement("canvas")
-    canvas.width = size
-    canvas.height = size
+    canvas.width = width
+    canvas.height = height
     context = canvas.getContext("2d")
 
     sparkles = []

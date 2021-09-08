@@ -37,26 +37,18 @@ task("babel", () => {
         .pipe(dest("dist"))
 })
 
-task("browser-sync", () => {
+task("server", () => {
     browserSync({
         server: {
             baseDir: "./dist/"
         }
     })
-
-    watch("dist/*.js", series("reload"))
-    watch("dist/*.css", series("reload"))
-    watch("dist/*.html", series("reload"))
 })
 
-task("reload", () => {
-    browserSync.reload();
-})
-
-task("watch", () => {
+task("src", () => {
     watch("src/*.js", series("babel"))
     watch("src/*.sass", series("sass"))
     watch("src/*.pug", series("pug"))
-});
+})
 
-task("default", series("babel", "sass", "pug", parallel("watch", "browser-sync")))
+task("default", series("babel", "sass", "pug", parallel("src", "server")))
